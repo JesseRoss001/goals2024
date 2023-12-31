@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useTrail, animated } from 'react-spring';
+import { useTrail, useSpring, animated } from 'react-spring';
 import EmojiPicker from 'emoji-picker-react';
 import './App.css';
 
 const ResolutionForm = ({ onNewResolution }) => {
   const [newResolution, setNewResolution] = useState('');
-  const [selectedEmoji, setSelectedEmoji] = useState(null); // Start with null
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
   const handleNewResolutionChange = (event) => {
@@ -13,8 +13,8 @@ const ResolutionForm = ({ onNewResolution }) => {
   };
 
   const onEmojiClick = (emojiObject) => {
-    setSelectedEmoji(emojiObject.emoji); // Set the selected emoji
-    setIsEmojiPickerVisible(false); // Hide the picker after selection
+    setSelectedEmoji(emojiObject.emoji);
+    setIsEmojiPickerVisible(false);
   };
 
   const toggleEmojiPicker = () => {
@@ -28,7 +28,7 @@ const ResolutionForm = ({ onNewResolution }) => {
       emoji: selectedEmoji,
     });
     setNewResolution('');
-    setSelectedEmoji(null); // Clear the selected emoji
+    setSelectedEmoji(null);
   };
 
   return (
@@ -54,7 +54,7 @@ const ResolutionForm = ({ onNewResolution }) => {
   );
 };
 
-const ResolutionList = ({ resolutions, onDelete }) => {
+const ResolutionList = ({ resolutions, onDelete, isDone }) => {
   return (
     <>
       <h2>Your New Year's Resolutions</h2>
@@ -63,7 +63,9 @@ const ResolutionList = ({ resolutions, onDelete }) => {
           <li key={index} className="resolution-item">
             <span className="resolution-text">{resolution.text}</span>
             <span className="resolution-emoji">{resolution.emoji}</span>
-            <button onClick={() => onDelete(index)} className="delete-resolution-btn">Delete</button>
+            {!isDone && (
+              <button onClick={() => onDelete(index)} className="delete-resolution-btn">Delete</button>
+            )}
           </li>
         ))}
       </ul>
@@ -74,6 +76,7 @@ const ResolutionList = ({ resolutions, onDelete }) => {
 function App() {
   const [isResolutionMode, setIsResolutionMode] = useState(false);
   const [resolutions, setResolutions] = useState([]);
+  const [isDone, setIsDone] = useState(false);
   const [trail, trailApi] = useTrail(3, () => ({
     xy: [0, 0],
     config: { mass: 10, tension: 200, friction: 50 },
@@ -90,6 +93,15 @@ function App() {
   const handleClick = () => {
     setIsResolutionMode(true);
   };
+  const glow = useSpring({
+    from: { opacity: 0.7 },
+    to: { opacity: 1 },
+    config: { duration: 2000 },
+    loop: { reverse: true },
+  });
+  const handleDone = () => {
+    setIsDone(true);
+  };
 
   const handleMouseMove = (e) => {
     trailApi.start({ xy: [e.clientX, e.clientY] });
@@ -97,34 +109,73 @@ function App() {
 
   const trans = (x, y) => `translate3d(${x}px,${y}px,0) translate3d(-50%,-50%,0)`;
 
+
+
+  const backgroundSpring = useSpring({
+    to: async (next) => {
+      while (true) {
+        await next({
+          background: 'linear-gradient(45deg, #000000, #111111, #222222, #333333, #444444, #555555, #666666, #777777, #888888, #999999, #AAAAAA, #BBBBBB, #CCCCCC, #DDDDDD, #EEEEEE, #FFFFFF)'
+        });
+        await next({ background: 'black' });
+      }
+    },
+    from: {
+      background: 'gray',
+    },
+    config: {
+      duration: 3500, // Adjust the duration for a smoother transition
+    },
+  });
+
   return (
-    <div className="App" onMouseMove={handleMouseMove} style={{ background: isResolutionMode ? 'linear-gradient(45deg, pink, purple, black)' : 'black' }}>
+    <animated.div className="App" onMouseMove={handleMouseMove} style={backgroundSpring}>
       {!isResolutionMode && (
         <>
+          <div className="hooksMain">
+            {trail.map((props, index) => (
+              <animated.div key={index} className={`blob blob-${index}`} style={{ transform: props.xy.to(trans) }} />
+            ))}
+          </div>
           <animated.button
             className="resolution-button"
             onClick={handleClick}
+            style={trail[2]}
           >
             Create Your New Year Resolutions
           </animated.button>
-
-          <div className="hooksMain">
-            {trail.map((props, index) => (
-              <animated.div key={index} style={{ transform: props.xy.to(trans) }} />
-            ))}
-          </div>
         </>
       )}
-
-      {isResolutionMode && (
+      {isResolutionMode && !isDone && (
         <div className="resolution-list">
           <h2>Let's Get Started</h2>
+          
           <ResolutionForm onNewResolution={handleNewResolution} />
-          <ResolutionList resolutions={resolutions} onDelete={handleDeleteResolution} />
+          <ResolutionList resolutions={resolutions} onDelete={handleDeleteResolution} isDone={isDone} />
+          <button onClick={handleDone} className="done-btn">Done</button>
         </div>
       )}
-    </div>
+      {isResolutionMode && isDone && (
+        <div className="resolution-list">
+          <h2>Your New Year's Resolutions</h2>
+          <ul className="resolutions-container">
+            {resolutions.map((resolution, index) => (
+              <li key={index} className="resolution-item">
+                <span className="resolution-text">{resolution.text}</span>
+                <span className="resolution-emoji">{resolution.emoji}</span>
+              </li>
+            ))}
+          </ul>
+          <animated.div className="glow-wrapper">
+            <animated.div className="glow" style={glow} />
+            <animated.div className="glow" style={glow} />
+            <animated.div className="glow" style={glow} />
+          </animated.div>
+        </div>
+      )}
+    </animated.div>
   );
 }
 
 export default App;
+

@@ -11,7 +11,53 @@
     transform: scale(1);
   }
 }
+.glow-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+/* Add styles for glowing lights here */.glow {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #fff;
+}
 
+.glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  z-index: -1;
+  animation: glow-animation 2s infinite alternate;
+}
+
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 2px #ffffff, /* White with a very small spread */
+      0 0 4px #e0e0e0, /* Light grey */
+      0 0 6px #c0c0c0, /* Medium grey */
+      0 0 8px #a0a0a0; /* Darker grey */
+  }
+  50% {
+    box-shadow: 
+      0 0 2px #f5f5f5, /* Off-white with a very small spread */
+      0 0 4px #dcdcdc, /* Light grey */
+      0 0 6px #bdbdbd, /* Medium grey */
+      0 0 8px #9e9e9e; /* Darker grey */
+  }
+}
 .fun-blob {
   background: pink;
   border-radius: 50%;
@@ -24,30 +70,6 @@
   /* Use more blobs with different sizes, positions, and animation delays */
 }
 
-.App {
-  transition: background 5s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: black;
-  overflow: hidden; /* Ensures no scrolling */
-  position: relative; /* For absolute positioning of children */
-}
-
-/* Resolution Button */
-.resolution-button {
-  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); /* Gradient color */
-  border: none;
-  color: white;
-  font-size: 16px;
-  padding: 20px 40px;
-  cursor: pointer;
-  border-radius: 20px;
-  outline: none;
-  transition: transform 0.3s;
-  z-index: 2; /* Ensures button is above the animated elements */
-}
 
 /* Animated Background Elements */
 .hooksMain {
@@ -66,7 +88,7 @@
   position: absolute;
   will-change: transform;
   border-radius: 50%;
-  background: lightcoral; /* This will be the initial color of the blobs */
+  background: rgb(218, 208, 208); /* This will be the initial color of the blobs */
   box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
   opacity: 0.6;
 }
@@ -115,148 +137,225 @@
 .fireworks {
   /* Add your fireworks animation styles here */
 }
-
-/* Colorful Gradient Background */
+/* App Container */
 .App {
-  background: linear-gradient(45deg, black, rgb(158, 157, 157), white);
+  transition: background 10s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(45deg, #111, #222); /* Updated gradient from white to black */
+  overflow: hidden;
+  position: relative;
+}
+/* Resolution Button */
+.resolution-button {
+  background: #ffffff; /* Changed to white */
+  color: #000000; /* Changed to black */
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  border-color: #949292;
+  /* Added black border */
+  outline: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: glow 8s ease-in-out infinite alternate; /* Added shadow for depth */
 }
 
+.resolution-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+}
+
+/* Resolution Form */
 .resolution-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
+  background-color: #ffffff; /* Changed to white */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Added shadow for depth */
+  border-radius: 8px; /* Rounded corners */
 }
 
 .resolution-input,
-.color-picker,
+.emoji-trigger,
 .add-resolution-btn {
   padding: 10px;
-  border: 2px solid #ddd;
+  border: 1px solid #000000; /* Changed border color */
   border-radius: 5px;
   font-size: 16px;
-  margin-bottom: 10px; /* Spacing between form elements */
+  margin-bottom: 10px;
 }
 
 .add-resolution-btn {
-  background-color: #ff85a2;
-  color: white;
-  border: none;
+  background-color: #000000; /* Changed to black */
+  color: #ffffff; /* Changed text color */
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .add-resolution-btn:hover {
-  background-color: #ff6781;
+  background-color: #333333; /* Darker shade on hover */
 }
 
+/* Emoji Picker Styles */
 .emoji-container {
   position: relative;
+  max-width: 80vw;
 }
 
 .emoji-trigger {
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  background: white;
+  background: #ffffff; /* Changed to white */
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.new-resolution-container {
-  display: flex;
-  align-items: center;
-}
-
-.selected-emoji {
-  font-size: 1.5em;
-  margin-right: 8px;
 }
 
 .emoji-picker-react {
   position: absolute;
-  bottom: 100%; /* Show above the trigger */
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-}
-
-.resolution-list li {
-  /* Styling for list items, include padding and margin for the "bubble" effect */
-  border-radius: 50%; /* Makes it a "bubble" */
-  display: inline-block; /* Or flex for better control */
-  margin: 10px;
-  padding: 10px;
+  padding:0;
+  margin:0;
 }
 
 /* Resolution List Styles */
 .resolution-list {
-  background-color: white;
+  background-color: #ffffff; /* Changed to white */
   border-radius: 10px;
   padding: 20px;
   margin-top: 20px;
-  /* Add any additional styling as needed */
-}
+  max-width: 90vw;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  
+}/* Added shadow for depth */
 
-.resolution-form,
-.resolution-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
 
-.resolution-input-container,
-.emoji-container,
-.color-picker-container {
-  width: 100%; /* Set the width you prefer */
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-/* Center the list items */
-.resolution-list ul {
-  padding: 2rem;
-  list-style: none;
-}
-
-.resolution-list h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Resolution Item Styles */
 .resolution-item {
-  background-color: white; /* Or any color you prefer */
-  margin: 15px 0; /* More space around each resolution */
-  padding: 20px; /* More padding inside each resolution */
-  border-radius: 10px; /* Optional: rounded corners */
+  background-color: #ffffff; /* Kept white for contrast */
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Adjusts space between the content */
+  justify-content: space-between;
+  box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.1); /* Added shadow for depth */
 }
 
 .resolution-text {
-  flex-grow: 1; /* Allows the text to fill the space */
+  flex-grow: 1;
+  color: #000000; /* Changed text color */
 }
 
 .resolution-emoji {
-  margin-left: 10px; /* Space between text and emoji */
+  margin-left: 10px;
 }
 
 .delete-resolution-btn {
-  background-color: #ff4d4d; /* A red color for the delete button */
-  color: white;
-  border: none;
+  background-color: #000000; /* Changed to black */
+  color: #ffffff; /* Changed text color */
   padding: 5px 10px;
   margin-left: 10px;
   border-radius: 5px;
   cursor: pointer;
+  border: 1px solid #000000; /* Added black border */
 }
 
 .delete-resolution-btn:hover {
-  background-color: #ff1a1a; /* A darker red for hover state */
+  background-color: #333333; /* Darker shade on hover */
 }
+
+/* Done Button */
+.done-btn {
+  background-color: #000000; /* Changed to black */
+  color: #ffffff; /* Changed text color */
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid #000000; /* Added black border */
+  margin-top: 20px; /* Added some space from the list */
+  transition: background-color 0.3s ease;
+}
+
+.done-btn:hover {
+  background-color: #333333; /* Darker shade on hover */
+}
+
+@media (max-width: 576px) { /* Adjust breakpoint as needed */
+  #root > div > div > form > div.emoji-container > aside {--rem: 16;
+  -webkit-font-smoothing: antialiased;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+  --epr-highlight-color: #007aeb;
+  --epr-hover-bg-color: #f1f8ff;
+  --epr-focus-bg-color: #e0f0ff;
+  --epr-text-color: #858585;
+  --epr-search-input-bg-color: #f6f6f6;
+  --epr-picker-border-color: #e7e7e7;
+  --epr-bg-color: #fff;
+  --epr-category-icon-active-color: #6aa8de;
+  --epr-skin-tone-picker-menu-color: #ffffff95;
+  --epr-horizontal-padding: 10px;
+  --epr-picker-border-radius: 8px;
+  --epr-search-border-color: var(--epr-highlight-color);
+  --epr-header-padding: 15px var(--epr-horizontal-padding);
+  --epr-active-skin-tone-indicator-border-color: var(--epr-highlight-color);
+  --epr-active-skin-hover-color: var(--epr-hover-bg-color);
+  --epr-search-input-bg-color-active: var(--epr-search-input-bg-color);
+  --epr-search-input-padding: 0 30px;
+  --epr-search-input-border-radius: 8px;
+  --epr-search-input-height: 40px;
+  --epr-search-input-text-color: var(--epr-text-color);
+  --epr-search-input-placeholder-color: var(--epr-text-color);
+  --epr-search-bar-inner-padding: var(--epr-horizontal-padding);
+  --epr-category-navigation-button-size: 30px;
+  --epr-emoji-variation-picker-height: 45px;
+  --epr-emoji-variation-picker-bg-color: var(--epr-bg-color);
+  --epr-preview-height: 70px;
+  --epr-preview-text-size: 14px;
+  --epr-preview-text-padding: 0 var(--epr-horizontal-padding);
+  --epr-preview-border-color: var(--epr-picker-border-color);
+  --epr-preview-text-color: var(--epr-text-color);
+  --epr-category-padding: 0 var(--epr-horizontal-padding);
+  --epr-category-label-bg-color: #ffffffe6;
+  --epr-category-label-text-color: var(--epr-text-color);
+  --epr-category-label-padding: 0 var(--epr-horizontal-padding);
+  --epr-category-label-height: 40px;
+  --epr-emoji-size: 30px;
+  --epr-emoji-padding: 5px;
+  --epr-emoji-fullsize: calc(var(--epr-emoji-size) + var(--epr-emoji-padding)*2);
+  --epr-emoji-hover-color: var(--epr-hover-bg-color);
+  --epr-emoji-variation-indicator-color: var(--epr-picker-border-color);
+  --epr-emoji-variation-indicator-color-hover: var(--epr-text-color);
+  --epr-header-overlay-z-index: 3;
+  --epr-emoji-variations-indictator-z-index: 1;
+  --epr-category-label-z-index: 2;
+  --epr-skin-variation-picker-z-index: 5;
+  --epr-preview-z-index: 6;
+  --epr-dark: #000;
+  --epr-dark-emoji-variation-picker-bg-color: var(--epr-dark);
+  --epr-dark-highlight-color: silver;
+  --epr-dark-text-color: var(--epr-highlight-color);
+  --epr-dark-hover-bg-color: #363636f6;
+  --epr-dark-focus-bg-color: #474747;
+  --epr-dark-search-input-bg-color: #333;
+  --epr-dark-category-label-bg-color: #222222e6;
+  --epr-dark-picker-border-color: #151617;
+  --epr-dark-bg-color: #222;
+  --epr-dark-search-input-bg-color-active: var(--epr-dark);
+  --epr-dark-emoji-variation-indicator-color: #444;
+  --epr-dark-category-icon-active-color: #3271b7;
+  --epr-dark-skin-tone-picker-menu-color: #22222295;
+  background-color: var(--epr-bg-color);
+  overflow: hidden;
+  border-color: var(--epr-picker-border-color);
+  border-radius: var(--epr-picker-border-radius);
+  border-style: solid;
+  border-width: 1px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 450px;
+  width: 280px;
+};}

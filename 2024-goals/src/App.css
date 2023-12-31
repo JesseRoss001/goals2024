@@ -1,4 +1,29 @@
 /* App Container */
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.fun-blob {
+  background: pink;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: pulse 2s infinite;
+  /* Use more blobs with different sizes, positions, and animation delays */
+}
+
 .App {
   transition: background 5s ease-in-out;
   display: flex;
@@ -86,7 +111,6 @@
   height: 25px;
 }
 
-
 /* Fireworks Animation Styles */
 .fireworks {
   /* Add your fireworks animation styles here */
@@ -94,7 +118,7 @@
 
 /* Colorful Gradient Background */
 .App {
-  background: linear-gradient(45deg, black, lightcoral, white);
+  background: linear-gradient(45deg, black, rgb(158, 157, 157), white);
 }
 
 .resolution-form {
@@ -141,6 +165,16 @@
   justify-content: center;
 }
 
+.new-resolution-container {
+  display: flex;
+  align-items: center;
+}
+
+.selected-emoji {
+  font-size: 1.5em;
+  margin-right: 8px;
+}
+
 .emoji-picker-react {
   position: absolute;
   bottom: 100%; /* Show above the trigger */
@@ -148,7 +182,6 @@
   transform: translateX(-50%);
   z-index: 10;
 }
-
 
 .resolution-list li {
   /* Styling for list items, include padding and margin for the "bubble" effect */
@@ -165,4 +198,65 @@
   padding: 20px;
   margin-top: 20px;
   /* Add any additional styling as needed */
+}
+
+.resolution-form,
+.resolution-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.resolution-input-container,
+.emoji-container,
+.color-picker-container {
+  width: 100%; /* Set the width you prefer */
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Center the list items */
+.resolution-list ul {
+  padding: 2rem;
+  list-style: none;
+}
+
+.resolution-list h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Resolution Item Styles */
+.resolution-item {
+  background-color: white; /* Or any color you prefer */
+  margin: 15px 0; /* More space around each resolution */
+  padding: 20px; /* More padding inside each resolution */
+  border-radius: 10px; /* Optional: rounded corners */
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Adjusts space between the content */
+}
+
+.resolution-text {
+  flex-grow: 1; /* Allows the text to fill the space */
+}
+
+.resolution-emoji {
+  margin-left: 10px; /* Space between text and emoji */
+}
+
+.delete-resolution-btn {
+  background-color: #ff4d4d; /* A red color for the delete button */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-resolution-btn:hover {
+  background-color: #ff1a1a; /* A darker red for hover state */
 }

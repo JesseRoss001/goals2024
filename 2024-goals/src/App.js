@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useTrail, animated } from 'react-spring';
-import EmojiPicker from 'emoji-picker-react'; // Import the emoji picker component
+import EmojiPicker from 'emoji-picker-react';
 import './App.css';
-// Move ResolutionForm and ResolutionList outside of the App component
 
 const ResolutionForm = ({ onNewResolution }) => {
   const [newResolution, setNewResolution] = useState('');
-  const [selectedEmoji, setSelectedEmoji] = useState('😀'); // Starting with a default emoji
-  const [selectedColor, setSelectedColor] = useState('#ffc0cb'); // Default pink color
+  const [selectedEmoji, setSelectedEmoji] = useState(null); // Start with null
   const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
-  const onEmojiClick = (event, emojiObject) => {
-    setSelectedEmoji(emojiObject.emoji);
+  const handleNewResolutionChange = (event) => {
+    setNewResolution(event.target.value);
+  };
+
+  const onEmojiClick = (emojiObject) => {
+    setSelectedEmoji(emojiObject.emoji); // Set the selected emoji
     setIsEmojiPickerVisible(false); // Hide the picker after selection
   };
 
@@ -19,63 +21,53 @@ const ResolutionForm = ({ onNewResolution }) => {
     setIsEmojiPickerVisible(!isEmojiPickerVisible);
   };
 
-
-  const handleEmojiChange = (emoji) => {
-    setSelectedEmoji(emoji);
-  };
-
-  const handleColorChange = (event) => {
-    setSelectedColor(event.target.value);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     onNewResolution({
       text: newResolution,
       emoji: selectedEmoji,
-      color: selectedColor,
     });
-    setNewResolution(''); // Reset the input after submission
+    setNewResolution('');
+    setSelectedEmoji(null); // Clear the selected emoji
   };
 
   return (
     <form onSubmit={handleSubmit} className="resolution-form">
-      <input
-        type="text"
-        value={newResolution}
-        onChange={handleNewResolutionChange}
-        placeholder="Your new resolution"
-        className="resolution-input"
-      />
+      <div className="resolution-input-container">
+        <input
+          type="text"
+          value={newResolution}
+          onChange={handleNewResolutionChange}
+          placeholder="Your new resolution"
+          className="resolution-input"
+        />
+        {selectedEmoji && <span className="selected-emoji">{selectedEmoji}</span>}
+      </div>
       <div className="emoji-container">
         <button type="button" className="emoji-trigger" onClick={toggleEmojiPicker}>
-          {selectedEmoji ? selectedEmoji : "Choose an Emoji"}
+          Choose an Emoji
         </button>
         {isEmojiPickerVisible && <EmojiPicker onEmojiClick={onEmojiClick} />}
       </div>
-      <EmojiPicker onEmojiClick={onEmojiClick} />
-      <input
-        type="color"
-        value={selectedColor}
-        onChange={handleColorChange}
-        className="color-picker"
-      />
       <button type="submit" className="add-resolution-btn">Add Resolution</button>
     </form>
   );
 };
 
-
-const ResolutionList = ({ resolutions }) => {
+const ResolutionList = ({ resolutions, onDelete }) => {
   return (
-    <ul>
-      {resolutions.map((resolution, index) => (
-        <li key={index} style={{ backgroundColor: resolution.color, display: 'flex', alignItems: 'center', margin: '10px 0', borderRadius: '10px', padding: '5px' }}>
-          <span style={{ fontSize: '1.5em', marginRight: '10px' }}>{resolution.emoji}</span>
-          {resolution.text}
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2>Your New Year's Resolutions</h2>
+      <ul className="resolutions-container">
+        {resolutions.map((resolution, index) => (
+          <li key={index} className="resolution-item">
+            <span className="resolution-text">{resolution.text}</span>
+            <span className="resolution-emoji">{resolution.emoji}</span>
+            <button onClick={() => onDelete(index)} className="delete-resolution-btn">Delete</button>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 
@@ -86,6 +78,10 @@ function App() {
     xy: [0, 0],
     config: { mass: 10, tension: 200, friction: 50 },
   }));
+
+  const handleDeleteResolution = (index) => {
+    setResolutions((currentResolutions) => currentResolutions.filter((_, i) => i !== index));
+  };
 
   const handleNewResolution = (resolution) => {
     setResolutions(currentResolutions => [...currentResolutions, resolution]);
@@ -121,13 +117,11 @@ function App() {
       )}
 
       {isResolutionMode && (
-        <>
-          <div className="resolution-list">
-            <h2>Let's Get Started</h2>
-            <ResolutionForm onNewResolution={handleNewResolution} />
-            <ResolutionList resolutions={resolutions} />
-          </div>
-        </>
+        <div className="resolution-list">
+          <h2>Let's Get Started</h2>
+          <ResolutionForm onNewResolution={handleNewResolution} />
+          <ResolutionList resolutions={resolutions} onDelete={handleDeleteResolution} />
+        </div>
       )}
     </div>
   );

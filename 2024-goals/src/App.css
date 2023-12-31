@@ -94,7 +94,68 @@
 
 /* Colorful Gradient Background */
 .App {
-  background: linear-gradient(45deg, pink, purple, black);
+  background: linear-gradient(45deg, black, lightcoral, white);
+}
+
+.resolution-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+.resolution-input,
+.color-picker,
+.add-resolution-btn {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px; /* Spacing between form elements */
+}
+
+.add-resolution-btn {
+  background-color: #ff85a2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-resolution-btn:hover {
+  background-color: #ff6781;
+}
+
+.emoji-container {
+  position: relative;
+}
+
+.emoji-trigger {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-picker-react {
+  position: absolute;
+  bottom: 100%; /* Show above the trigger */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+
+.resolution-list li {
+  /* Styling for list items, include padding and margin for the "bubble" effect */
+  border-radius: 50%; /* Makes it a "bubble" */
+  display: inline-block; /* Or flex for better control */
+  margin: 10px;
+  padding: 10px;
 }
 
 /* Resolution List Styles */
